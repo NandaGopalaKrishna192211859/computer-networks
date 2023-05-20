@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_NODES 10
+#define INFINITY INT_MAX
+
+int costMatrix[MAX_NODES][MAX_NODES];
+int distanceVector[MAX_NODES];
+int nextHop[MAX_NODES];
+int numNodes;
+
+void initialize() {
+    int i, j;
+
+    for (i = 0; i < numNodes; i++) {
+        for (j = 0; j < numNodes; j++) {
+            costMatrix[i][j] = INFINITY;
+        }
+        distanceVector[i] = INFINITY;
+        nextHop[i] = -1;
+    }
+}
+
+void distanceVectorRouting() {
+    int i, j, k;
+    int tempDistance;
+
+    for (k = 0; k < numNodes; k++) {
+        for (i = 0; i < numNodes; i++) {
+            for (j = 0; j < numNodes; j++) {
+                if (costMatrix[i][j] != INFINITY) {
+                    tempDistance = distanceVector[i] + costMatrix[i][j];
+                    if (tempDistance < distanceVector[j]) {
+                        distanceVector[j] = tempDistance;
+                        nextHop[j] = i;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void displayRoutingTable() {
+    int i;
+
+    printf("Node\tDistance\tNext Hop\n");
+    for (i = 0; i < numNodes; i++) {
+        printf("%d\t%d\t\t%d\n", i, distanceVector[i], nextHop[i]);
+    }
+}
+
+int main() {
+    int i, j;
+
+    printf("Enter the number of nodes: ");
+    scanf("%d", &numNodes);
+
+    initialize();
+
+    printf("Enter the cost matrix (enter -1 for infinity):\n");
+    for (i = 0; i < numNodes; i++) {
+        for (j = 0; j < numNodes; j++) {
+            scanf("%d", &costMatrix[i][j]);
+            if (costMatrix[i][j] == -1) {
+                costMatrix[i][j] = INFINITY;
+            }
+        }
+    }
+
+    printf("\nPerforming distance vector routing...\n");
+    distanceVectorRouting();
+
+    printf("\nRouting table:\n");
+    displayRoutingTable();
+
+    return 0;
+}
